@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:rony2025@rony-formulario.cpo2i6842kw2.us-east-1.rds.amazonaws.com:3306/equipos_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'mi_clave_secreta_2024'
+app.config['SECRET_KEY'] = 'rony2025'
 
 db = SQLAlchemy(app)
 
