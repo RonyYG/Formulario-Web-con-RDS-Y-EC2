@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Equipos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.75), rgba(240, 248, 255, 0.75)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23a8d5e2;stop-opacity:1" /><stop offset="100%" style="stop-color:%23d4e9f2;stop-opacity:1" /></linearGradient></defs><rect fill="url(%23sky)" width="1200" height="800"/><rect fill="%23e8d5c4" y="500" width="1200" height="300"/><rect fill="%23c4a57b" y="650" width="1200" height="150"/><path d="M 0 600 Q 200 500 400 550 T 800 520 L 800 800 L 0 800 Z" fill="%234a7c59"/><path d="M 200 580 Q 400 480 600 530 T 1000 500 L 1000 800 L 200 800 Z" fill="%235d9969"/><ellipse cx="150" cy="580" rx="60" ry="80" fill="%23d4567a"/><ellipse cx="140" cy="570" rx="50" ry="70" fill="%23e66b8f"/><ellipse cx="850" cy="600" rx="70" ry="90" fill="%23ff6b9d"/><ellipse cx="840" cy="590" rx="60" ry="80" fill="%23ff8eb3"/><ellipse cx="950" cy="610" rx="50" ry="70" fill="%23ffa0c1"/><rect fill="%23b8956a" x="500" y="600" width="200" height="150"/><rect fill="%238b6f47" x="560" y="650" width="60" height="100"/><rect fill="%236fa8dc" x="520" y="620" width="50" height="50"/><rect fill="%236fa8dc" x="630" y="620" width="50" height="50"/><path d="M 450 600 L 600 500 L 750 600 Z" fill="%239d7a54"/><circle cx="100" cy="150" r="60" fill="%23ffd700" opacity="0.8"/></svg>');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            border: 3px solid #4e9f3d;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .escudo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #1e5128 0%, #4e9f3d 50%, #f4c430 100%);
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            border: 4px solid #1e5128;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab.active {
+            background: #4e9f3d;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: #d0d0d0;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4e9f3d;
+            box-shadow: 0 0 0 3px rgba(78, 159, 61, 0.1);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4e9f3d, #3d7d30);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(78, 159, 61, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #3d7d30, #2d5d20);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(78, 159, 61, 0.4);
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .alert-error {
+            background: #f44336;
+            color: white;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="escudo"></div>
+            <h1>Bienvenido</h1>
+            <p class="subtitle">Sistema de Registro de Equipos</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="cambiarTab('login')">Iniciar Sesión</button>
+            <button class="tab" onclick="cambiarTab('registro')">Registrarse</button>
+        </div>
+
+        <div id="loginForm" class="form-container active">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail"> Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required placeholder="ejemplo@correo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword"> Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="">
+                </div>
+
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+        </div>
+
+        <div id="registroForm" class="form-container">
+            <form onsubmit="handleRegistro(event)">
+                <div class="form-group">
+                    <label for="regNombre"> Nombre Completo</label>
+                    <input type="text" id="regNombre" required placeholder="Juan Pérez">
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail"> Correo Electrónico</label>
+                    <input type="email" id="regEmail" required placeholder="ejemplo@correo.com">
+                </div>
+
+                <div class="form-group">
