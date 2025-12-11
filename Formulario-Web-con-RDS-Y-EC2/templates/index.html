@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Registro de Equipos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect fill="%23e8d5c4" width="1200" height="800"/><rect fill="%23c4a57b" y="600" width="1200" height="200"/><ellipse cx="200" cy="100" rx="80" ry="120" fill="%234a7c59"/><ellipse cx="180" cy="80" rx="60" ry="100" fill="%235d9969"/><ellipse cx="220" cy="90" rx="50" ry="90" fill="%23528f5f"/><ellipse cx="900" cy="120" rx="100" ry="140" fill="%23d4567a"/><ellipse cx="880" cy="100" rx="80" ry="120" fill="%23e66b8f"/><ellipse cx="920" cy="110" rx="70" ry="110" fill="%23db5f83"/><rect fill="%23b8956a" x="50" y="400" width="300" height="250"/><rect fill="%238b6f47" x="120" y="480" width="80" height="120"/><rect fill="%236fa8dc" x="200" y="450" width="60" height="60"/><rect fill="%236fa8dc" x="260" y="450" width="60" height="60"/><rect fill="%239d7a54" x="50" y="380" width="300" height="30" transform="rotate(-25 200 395)"/></svg>');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .escudo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e5128 0%, #4e9f3d 50%, #f4c430 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 3px solid #1e5128;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #4e9f3d;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            background: #3d7d30;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn-success {
+            background: #2196F3;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-success:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect fill="%23e8d5c4" width="1200" height="800"/><rect fill="%23c4a57b" y="600" width="1200" height="200"/><ellipse cx="200" cy="100" rx="80" ry="120" fill="%234a7c59"/><ellipse cx="180" cy="80" rx="60" ry="100" fill="%235d9969"/><ellipse cx="220" cy="90" rx="50" ry="90" fill="%23528f5f"/><ellipse cx="900" cy="120" rx="100" ry="140" fill="%23d4567a"/><ellipse cx="880" cy="100" rx="80" ry="120" fill="%23e66b8f"/><ellipse cx="920" cy="110" rx="70" ry="110" fill="%23db5f83"/><rect fill="%23b8956a" x="50" y="400" width="300" height="250"/><rect fill="%238b6f47" x="120" y="480" width="80" height="120"/><rect fill="%236fa8dc" x="200" y="450" width="60" height="60"/><rect fill="%236fa8dc" x="260" y="450" width="60" height="60"/></svg>');
+            background-size: cover;
+            background-position: center;
+            margin: 30px auto;
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid #4e9f3d;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4e9f3d;
+        }
+
+        .modal-escudo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e5128 0%, #4e9f3d 50%, #f4c430 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 2px solid #1e5128;
+        }
+
+        .close {
+            color: #999;
+            float: right;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4e9f3d;
+            box-shadow: 0 0 0 3px rgba(78, 159, 61, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: #4e9f3d;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 15px;
+            font-size: 13px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #1976D2;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-activo {
+            background: #4caf50;
+            color: white;
+        }
+
+        .badge-inactivo {
+            background: #f44336;
+            color: white;
+        }
+
+        .badge-mantenimiento {
+            background: #ff9800;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #4e9f3d;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .alert-error {
+            background: #f44336;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="escudo"></div>
+            <div>
+                <h1>Bienvenido</h1>
+                <p style="color: #666; margin: 5px 0 0 0;">Sistema de Registro de Equipos</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="alertContainer"></div>
+
+            <div class="btn-container">
+                <button class="btn-primary" onclick="abrirModal()">
+                     Registrar
+                </button>
+                <button class="btn-success" onclick="cargarEquipos()">
+                     Refrescar
+                </button>
+            </div>
+
+            <div id="tablaContainer">
+                <div class="loading">Cargando equipos...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="equipoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            
+            <div class="modal-header">
+                <div class="modal-escudo"></div>
+                <h2 id="modalTitle">Bienvenido</h2>
+            </div>
+            
+            <form id="equipoForm">
+                <input type="hidden" id="equipoId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="codigo">Código</label>
+                        <input type="text" id="codigo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo_equipo">Tipo de equipo</label>
+                        <select id="tipo_equipo" required>
+                            <option value=""></option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="Desktop">Desktop</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Servidor">Servidor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sistema_operativo">Sistema operativo</label>
+                        <select id="sistema_operativo" required>
+                            <option value=""></option>
+                            <option value="Windows 11">Windows 11</option>
+                            <option value="Windows 10">Windows 10</option>
+                            <option value="macOS">macOS</option>
+                            <option value="Linux">Linux</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ram">RAM</label>
+                        <select id="ram" required>
+                            <option value=""></option>
+                            <option value="4 GB">4 GB</option>
+                            <option value="8 GB">8 GB</option>
+                            <option value="16 GB">16 GB</option>
+                            <option value="32 GB">32 GB</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="almacenamiento">Almacenamiento (GB)</label>
+                        <select id="almacenamiento" required>
+                            <option value=""></option>
+                            <option value="256 GB SSD">256 GB SSD</option>
+                            <option value="512 GB SSD">512 GB SSD</option>
+                            <option value="1 TB SSD">1 TB SSD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_mantenimiento">Fecha de Mantenimiento</label>
+                        <input type="date" id="fecha_mantenimiento">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select id="estado" required>
+                        <option value=""></option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 15px;">
+                    Registrar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEquipos();
+        });
+
+        function mostrarAlerta(mensaje, tipo) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${tipo}`;
+            alert.textContent = mensaje;
+            alertContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 4000);
+        }
+
+        async function cargarEquipos() {
+            try {
+                const response = await fetch('/api/equipos');
+                const equipos = await response.json();
+                
+                let html = '<table><thead><tr><th>Código</th><th>Tipo</th><th>Marca</th><th>Modelo</th><th>SO</th><th>RAM</th><th>Almacenamiento</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
+                
+                if (equipos.length === 0) {
+                    html += '<tr><td colspan="9"><div class="empty-state">No hay equipos registrados</div></td></tr>';
+                } else {
+                    equipos.forEach(equipo => {
+                        const estadoBadge = equipo.estado === 'Activo' ? 'badge-activo' : equipo.estado === 'Inactivo' ? 'badge-inactivo' : 'badge-mantenimiento';
+                        html += `<tr>
+                            <td><strong>${equipo.codigo}</strong></td>
+                            <td>${equipo.tipo_equipo}</td>
+                            <td>${equipo.marca}</td>
+                            <td>${equipo.modelo}</td>
+                            <td>${equipo.sistema_operativo}</td>
+                            <td>${equipo.ram}</td>
+                            <td>${equipo.almacenamiento}</td>
+                            <td><span class="badge ${estadoBadge}">${equipo.estado}</span></td>
+                            <td>
+                                <button class="btn-edit" onclick="editarEquipo(${equipo.id})">Editar</button>
+                                <button class="btn-delete" onclick="eliminarEquipo(${equipo.id})">Eliminar</button>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                html += '</tbody></table>';
+                document.getElementById('tablaContainer').innerHTML = html;
+            } catch (error) {
+                mostrarAlerta('Error al cargar los equipos', 'error');
+            }
+        }
+
+        function abrirModal() {
+            document.getElementById('modalTitle').textContent = 'Bienvenido';
+            document.getElementById('equipoForm').reset();
+            document.getElementById('equipoId').value = '';
+            document.getElementById('equipoModal').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('equipoModal').style.display = 'none';
+        }
+
+        async function editarEquipo(id) {
+            try {
+                const response = await fetch(`/api/equipos/${id}`);
+                const equipo = await response.json();
+                
+                document.getElementById('modalTitle').textContent = 'Editar Equipo';
+                document.getElementById('equipoId').value = equipo.id;
+                document.getElementById('codigo').value = equipo.codigo;
+                document.getElementById('marca').value = equipo.marca;
+                document.getElementById('tipo_equipo').value = equipo.tipo_equipo;
+                document.getElementById('modelo').value = equipo.modelo;
+                document.getElementById('sistema_operativo').value = equipo.sistema_operativo;
+                document.getElementById('ram').value = equipo.ram;
+                document.getElementById('almacenamiento').value = equipo.almacenamiento;
+                document.getElementById('estado').value = equipo.estado;
+                if (equipo.fecha_mantenimiento) {
+                    document.getElementById('fecha_mantenimiento').value = equipo.fecha_mantenimiento.split(' ')[0];
+                }
+                document.getElementById('equipoModal').style.display = 'block';
+            } catch (error) {
+                mostrarAlerta('Error al cargar el equipo', 'error');
+            }
+        }
+
+        async function eliminarEquipo(id) {
+            if (!confirm('¿Está seguro de eliminar este equipo?')) return;
+            try {
+                const response = await fetch(`/api/equipos/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                if (data.success) {
+                    mostrarAlerta('Equipo eliminado correctamente', 'success');
+                    cargarEquipos();
+                }
+            } catch (error) {
+                mostrarAlerta('Error al eliminar', 'error');
+            }
+        }
+
+        document.getElementById('equipoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('equipoId').value;
+            const data = {
+                codigo: document.getElementById('codigo').value,
+                marca: document.getElementById('marca').value,
+                tipo_equipo: document.getElementById('tipo_equipo').value,
+                modelo: document.getElementById('modelo').value,
+                sistema_operativo: document.getElementById('sistema_operativo').value,
+                ram: document.getElementById('ram').value,
+                almacenamiento: document.getElementById('almacenamiento').value,
+                fecha_mantenimiento: document.getElementById('fecha_mantenimiento').value,
+                estado: document.getElementById('estado').value
+            };
+            
+            try {
+                const url = id ? `/api/equipos/${id}` : '/api/equipos';
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    mostrarAlerta('Equipo guardado correctamente', 'success');
+                    cerrarModal();
+                    cargarEquipos();
+                }
+            } catch (error) {
+                mostrarAlerta('Error al guardar', 'error');
+            }
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('equipoModal')) {
+                cerrarModal();
+            }
+        }
+    </script>
+</body>
+</html>
